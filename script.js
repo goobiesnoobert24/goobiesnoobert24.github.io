@@ -156,3 +156,21 @@ function animateFollower(timestamp = 0) {
 }
 
 requestAnimationFrame(animateFollower);
+
+let resizeReloadTimeout = null;
+let lastWidth = window.innerWidth;
+let lastHeight = window.innerHeight;
+
+window.addEventListener('resize', () => {
+    const widthChanged = window.innerWidth !== lastWidth;
+    const heightChanged = window.innerHeight !== lastHeight;
+    if (!widthChanged && !heightChanged) {
+        return;
+    }
+    lastWidth = window.innerWidth;
+    lastHeight = window.innerHeight;
+    clearTimeout(resizeReloadTimeout);
+    resizeReloadTimeout = setTimeout(() => {
+        window.location.reload();
+    }, 200);
+});
