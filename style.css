@@ -30,7 +30,7 @@ body {
     position: absolute;
     width: 220px;
     height: auto;
-    pointer-events: none;
+    pointer-events: auto;
     will-change: transform;
     filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
     z-index: 1;
@@ -70,6 +70,28 @@ body {
     top: -100px;
     opacity: 0.8;
     animation: fall linear;
+}
+
+.heart {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    color: #ff1b1b;
+    font-size: 1.5rem;
+    animation: heartRise 1.2s ease-out forwards;
+    pointer-events: none;
+    opacity: 1;
+}
+
+@keyframes heartRise {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -20%) scale(0.6);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -120px) scale(1.4);
+    }
 }
 
 @keyframes fall {

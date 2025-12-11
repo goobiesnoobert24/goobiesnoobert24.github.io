@@ -2,6 +2,7 @@ const centerPhoto = document.getElementById('centerPhoto');
 const followerPhoto = document.getElementById('followerPhoto');
 const backgroundSound = document.getElementById('backgroundSound');
 const clickSound = document.getElementById('clickSound');
+const purrSound = document.getElementById('purrSound');
 const body = document.body;
 const followerPosition = {
     x: window.innerWidth / 2,
@@ -11,6 +12,13 @@ const followerTarget = {
     x: window.innerWidth / 2,
     y: window.innerHeight / 2,
 };
+
+const hearts = [];
+
+backgroundSound.volume = 0.25;
+purrSound.volume = 0;
+purrSound.pause();
+purrSound.currentTime = 0;
 
 function tryStartBackgroundSound() {
     backgroundSound.play().catch(() => {
@@ -28,14 +36,47 @@ tryStartBackgroundSound();
 
 centerPhoto.addEventListener('click', () => {
     centerPhoto.classList.add('spin');
-    backgroundSound.currentTime = 0;
-    backgroundSound.play().catch(() => {});
     clickSound.currentTime = 0;
     clickSound.play();
     setTimeout(() => {
         centerPhoto.classList.remove('spin');
     }, 1000);
 });
+
+let isPurring = false;
+function startPurr() {
+    isPurring = true;
+    purrSound.volume = 1;
+    purrSound.play().catch(() => {});
+}
+
+function stopPurr() {
+    if (!isPurring) return;
+    isPurring = false;
+    purrSound.volume = 0;
+}
+
+followerPhoto.addEventListener('pointerenter', startPurr);
+followerPhoto.addEventListener('pointerleave', stopPurr);
+
+function spawnHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = '❤';
+    heart.style.left = `${followerPosition.x + (Math.random() * 80 - 40)}px`;
+    heart.style.top = `${followerPosition.y - 30 + (Math.random() * 20 - 10)}px`;
+    body.appendChild(heart);
+    hearts.push(heart);
+    setTimeout(() => {
+        heart.remove();
+    }, 1200);
+}
+
+setInterval(() => {
+    if (isPurring) {
+        spawnHeart();
+    }
+}, 200);
 
 window.addEventListener('mousemove', (event) => {
     followerTarget.x = event.clientX;
@@ -76,7 +117,7 @@ function animateFollower(timestamp = 0) {
         const uy = dyToCursor / distanceToCursor;
         const offsetAmount = distanceToCursor > hoverOffset
             ? hoverOffset
-            : Math.max(distanceToCursor * 0.35, 10);
+            : Math.max(distanceToCursor - 5, 0);
         targetX -= ux * offsetAmount;
         targetY -= uy * offsetAmount;
     }
